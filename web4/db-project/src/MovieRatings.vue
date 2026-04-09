@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-
 const API_URL = 'https://ngy.582mi.com/web4/api/index.php';
 const ratings = ref([]);
 
@@ -10,9 +9,6 @@ const fetchData = async () => {
     fetch(API_URL).then(res => res.json())
   ]);
   ratings.value = r; 
-  // movies.value = m; 
-  // users.value = u; 
-  // movieStats.value = s; 
   console.log('monkeys:', r);
 };
 onMounted(fetchData);
@@ -31,10 +27,10 @@ onMounted(fetchData);
           <h3>raw data</h3>
           
             <article v-for="rxx in ratings" class="stat-card">
-              <p>{{ rxx.title }}, <br> <strong> {{ rxx.review_text }}</strong></p>
+              <p>{{ rxx.title }}, <br> 
+                <strong> {{ rxx.review_text }}</strong></p>
               <p>{{ rxx.score }}</p>
             </article>
-         
         </section>
       </div>
       </main>
