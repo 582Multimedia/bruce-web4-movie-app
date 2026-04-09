@@ -1,19 +1,19 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-
+import AddReview from './AddReview.vue';
+import DatabaseAdmin from './DatabaseAdmin.vue';
 
 const API_URL = 'https://ngy.582mi.com/web4/api/index.php';
-const ratings = ref([]);
+const ratings = ref([]); const movies = ref([]); const users = ref([]); const movieStats = ref([]);
 
 const fetchData = async () => {
-  const [r] = await Promise.all([
-    fetch(API_URL).then(res => res.json())
+  const [r, m, u, s] = await Promise.all([
+    fetch(API_URL).then(res => res.json()),
+    fetch(`${API_URL}?action=get_movies`).then(res => res.json()),
+    fetch(`${API_URL}?action=get_users`).then(res => res.json()),
+    fetch(`${API_URL}?action=get_movie_stats`).then(res => res.json())
   ]);
-  ratings.value = r; 
-  // movies.value = m; 
-  // users.value = u; 
-  // movieStats.value = s; 
-  console.log('monkeys:', r);
+  ratings.value = r; movies.value = m; users.value = u; movieStats.value = s;
 };
 onMounted(fetchData);
 </script>
@@ -28,17 +28,15 @@ onMounted(fetchData);
     <main class="content-grid">
       <div class="left-col">
         <section class="stats-section">
-          <h3>raw data</h3>
-          
-            <article v-for="rxx in ratings" class="stat-card">
-              <p>{{ rxx.title }}, <br> <strong> {{ rxx.review_text }}</strong></p>
-              <p>{{ rxx.score }}</p>
-            </article>
-         
+          <div class="badge">Movie Library & Averages</div>
+          <div class="stats-grid">
+            <div v-for="m in movieStats" :key="m.movie_id" class="stat-card">
+              <div><strong>{{ m.title }}</strong><br><small>{{ m.release_year }}</small></div>
+              <div class="avg-box">{{ m.avg_score || '0' }}</div>
+            </div>
+          </div>
         </section>
-      </div>
-      </main>
-<!-- 
+
         <section class="feed-section">
           <div class="badge">Live Reviews</div>
           <div v-for="r in ratings" :key="r.rating_id" class="rating-card">
@@ -54,7 +52,7 @@ onMounted(fetchData);
         <AddReview :users="users" :movies="movies" @success="fetchData" />
         <DatabaseAdmin @success="fetchData" />
       </aside>
-    </main> -->
+    </main>
   </div>
 </template>
 
